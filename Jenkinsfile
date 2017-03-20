@@ -27,18 +27,17 @@ podTemplate(label: 'image-builder', containers: [
         checkout scm
         def imgSha = ''
         container('docker') {
-
             stage('build') {
                 //  - ~/sha256:/
-                sh 'pwd'
-                sh 'ls -al'
-                imgSha = sh(returnStdout: true, script: "docker build --pull -q --build-arg scalaVer=${params.scalaVer} .").trim()[7..-1]
+                imgSha = sh(returnStdout: true, script: "docker build --pull --build-arg scalaVer=${params.scalaVer} .").trim()[7..-1]
                 echo "${imgSha}"
             }
         }
 
         stage('test') {
-
+            container('docker') {
+              sh "docker run -w ~/project ${imgSha} sbt -sbt-create -v -${params.scalaVer} sbtVersion"
+            }
         }
 
         stage('deploy') {
