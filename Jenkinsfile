@@ -17,7 +17,8 @@ podTemplate(label: 'image-builder', containers: [
     properties([
             pipelineTriggers([]),
             parameters([
-                    string(name: 'imageRepo', defaultValue: 'henryrao/sbt', description: 'Name of Image' )
+                    string(name: 'imageRepo', defaultValue: 'henryrao/sbt', description: 'Name of Image' ),
+                    string(name: 'scalaVer', defaultValue: '211', description: 'Scala Version' )
             ]),
     ])
 
