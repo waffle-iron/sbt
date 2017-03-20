@@ -17,7 +17,8 @@ podTemplate(label: 'demo', containers: [
     properties([
             pipelineTriggers([]),
             parameters([
-                    string(name: 'imageRepo', defaultValue: 'henryrao/sbt', description: 'Name of Image' )
+                    string(name: 'imageRepo', defaultValue: 'henryrao/sbt', description: 'Name of Image' ),
+                    string(name: 'scalaVer', defaultValue: '211', description: 'Scala Version' )
             ]),
     ])
 
@@ -31,7 +32,7 @@ podTemplate(label: 'demo', containers: [
                 //  - ~/sha256:/
                 sh 'pwd'
                 sh 'ls -al'
-                imgSha = sh(returnStdout: true, script: "docker build --pull -q .").trim()[7..-1]
+                imgSha = sh(returnStdout: true, script: "docker build --pull -q --build-arg scalaVer=${params.scalaVer} .").trim()[7..-1]
                 echo "${imgSha}"
             }
         }
@@ -44,7 +45,7 @@ podTemplate(label: 'demo', containers: [
             container('docker') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh "docker login -u $USERNAME -p $PASSWORD"
-                    sh "docker tag ${imgSha} ${params.imageRepo}"
+                    sh "docker tag ${imgSha} ${params.imageRepo}:${params.scalaVer}"
                     sh "docker push ${params.imageRepo}"
                 }
             }
