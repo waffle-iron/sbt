@@ -29,20 +29,19 @@ podTemplate(label: 'image-builder', containers: [
         container('docker') {
 
             stage('build') {
-                imgSha = sh(returnStdout: true, script: "docker build --pull -q .").trim()[7..-1]
+                imgSha = sh(returnStdout: true, script: "docker build --pull --build-arg scalaVer=${params.scalaVer} -q .").trim()[7..-1]
                 echo "${imgSha}"
             }
 
             stage('test') {
-                echo "${imgSha}"
                 sh "docker run -w /tmp/test1 ${imgSha} sbt -sbt-create -v -${params.scalaVer} sbtVersion"
             }
 
             stage('deploy') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh "docker login -u $USERNAME -p $PASSWORD"
-                    sh "docker tag ${imgSha} ${params.imageRepo}"
-                    sh "docker push ${params.imageRepo}"
+                    sh "docker tag ${imgSha} ${params.imageRepo}:${params.scalaVer}"
+                    sh "docker push ${params.imageRepo}:${params.scalaVer}"
                 }
             }
         }
