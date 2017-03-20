@@ -29,13 +29,12 @@ podTemplate(label: 'image-builder', containers: [
         container('docker') {
 
             stage('build') {
-                //  - ~/sha256:/
                 imgSha = sh(returnStdout: true, script: "docker build --pull .").trim()[7..-1]
                 echo "${imgSha}"
             }
 
             stage('test') {
-                sh "docker run -w /tmp/test1 ${imgSha} sbt -sbt-create -v -${params.scalaVer} sbtVersion"
+                echo "${imgSha}"
             }
 
             stage('deploy') {
