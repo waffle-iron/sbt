@@ -1,5 +1,5 @@
 #!groovy
-podTemplate(label: 'demo', containers: [
+podTemplate(label: 'image-builder', containers: [
         containerTemplate(name: 'jnlp',
                 image: 'henryrao/jnlp-slave',
                 args: '${computer.jnlpmac} ${computer.name}',
@@ -22,7 +22,7 @@ podTemplate(label: 'demo', containers: [
             ]),
     ])
 
-    node('demo') {
+    node('image-builder') {
 
         checkout scm
         def imgSha = ''
