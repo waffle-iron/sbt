@@ -17,8 +17,7 @@ podTemplate(label: 'image-builder', containers: [
     properties([
             pipelineTriggers([]),
             parameters([
-                    string(name: 'imageRepo', defaultValue: 'henryrao/sbt', description: 'Name of Image' ),
-                    string(name: 'scalaVer', defaultValue: '211', description: 'Scala Version' )
+                    string(name: 'imageRepo', defaultValue: 'henryrao/sbt', description: 'Name of Image' )
             ]),
     ])
 
@@ -27,24 +26,21 @@ podTemplate(label: 'image-builder', containers: [
         checkout scm
         def imgSha = ''
         container('docker') {
+
             stage('build') {
                 //  - ~/sha256:/
-                imgSha = sh(returnStdout: true, script: "docker build --pull --build-arg scalaVer=${params.scalaVer} .").trim()[7..-1]
+                imgSha = sh(returnStdout: true, script: "docker build --pull .").trim()[7..-1]
                 echo "${imgSha}"
             }
-        }
 
-        stage('test') {
-            container('docker') {
-              sh "docker run -w /tmp/test1 ${imgSha} sbt -sbt-create -v -${params.scalaVer} sbtVersion"
+            stage('test') {
+                sh "docker run -w /tmp/test1 ${imgSha} sbt -sbt-create -v -${params.scalaVer} sbtVersion"
             }
-        }
 
-        stage('deploy') {
-            container('docker') {
+            stage('deploy') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh "docker login -u $USERNAME -p $PASSWORD"
-                    sh "docker tag ${imgSha} ${params.imageRepo}:${params.scalaVer}"
+                    sh "docker tag ${imgSha} ${params.imageRepo}:211"
                     sh "docker push ${params.imageRepo}"
                 }
             }
