@@ -40,7 +40,7 @@ podTemplate(label: 'image-builder', containers: [
             stage('deploy') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh "docker login -u $USERNAME -p $PASSWORD"
-                    sh "docker tag ${imgSha} ${params.imageRepo}:211"
+                    sh "docker tag ${imgSha} ${params.imageRepo}"
                     sh "docker push ${params.imageRepo}"
                 }
             }
