@@ -36,7 +36,7 @@ podTemplate(label: 'image-builder', containers: [
 
         stage('test') {
             container('docker') {
-              sh "docker run -w ~/project ${imgSha} sbt -sbt-create -v -${params.scalaVer} sbtVersion"
+              sh "docker run -w /tmp/test1 ${imgSha} sbt -sbt-create -v -${params.scalaVer} sbtVersion"
             }
         }
 
