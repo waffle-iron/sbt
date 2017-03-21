@@ -11,10 +11,11 @@ ENV HOME=/home/jenkins
 
 ARG scalaVer=211
 
-USER root
+WORKDIR $HOME
 
 RUN mkdir ~/project && \
   cd ~/project && \
-  sbt -sbt-create -v -${scalaVer} about
+  sbt -sbt-create -v -${scalaVer} about && \
+  rm -rf ~/project
 
 VOLUME ["/home/jenkins/.sbt","/home/jenkins/.ivy2"]
