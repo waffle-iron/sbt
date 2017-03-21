@@ -16,3 +16,5 @@ USER root
 RUN mkdir ~/project && \
   cd ~/project && \
   sbt -sbt-create -v -${scalaVer} about
+
+VOLUME /home/jenkins
