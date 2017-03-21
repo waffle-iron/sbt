@@ -12,9 +12,4 @@ ARG scalaVer=211
 
 RUN mkdir ~/project && \
   cd ~/project && \
-  sbt -sbt-create -v -${scalaVer} about && \
-  mv ~/.sbt /tmp && \
-  mv ~/.ivy2 /tmp
-
-ADD entrypoint.sh /
-ENTRYPOINT ["/entrypoint.sh"]
+  sbt -sbt-create -v -${scalaVer} about
