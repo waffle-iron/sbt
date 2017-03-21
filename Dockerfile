@@ -17,4 +17,4 @@ RUN mkdir ~/project && \
   cd ~/project && \
   sbt -sbt-create -v -${scalaVer} about
 
-VOLUME /home/jenkins
+VOLUME ["/home/jenkins/.sbt","/home/jenkins/.ivy2"]
