@@ -11,7 +11,7 @@ ENV PATH=/var/sbt-launcher-packaging-0.13.13/bin:$PATH
 
 ADD global.sbt $HOME/.sbt/0.13/global.sbt
 
-RUN mkdir ~/proj1 && cd ~/proj1 \
+RUN mkdir ~/proj1 && cd $_ \
   && sbt about \
   && rm -rf ~/proj1
 
